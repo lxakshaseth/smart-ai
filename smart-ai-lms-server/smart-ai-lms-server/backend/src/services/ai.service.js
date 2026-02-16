@@ -1,20 +1,11 @@
-require("dotenv").config();
 const OpenAI = require("openai");
+require("dotenv").config();
 
 // =====================================================
-// 🔐 ENV VALIDATION
-// =====================================================
-if (!process.env.GROQ_API_KEY) {
-  throw new Error("❌ GROQ_API_KEY is missing in .env file");
-}
-
-const MODEL = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
-
-// =====================================================
-// LOAD GROQ CLIENT SECURELY
+// LOAD GROQ CLIENT SECURELY (.env REQUIRED)
 // =====================================================
 const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
+  apiKey: "process.env.OPENAI_API_KEY",
   baseURL: "https://api.groq.com/openai/v1"
 });
 
@@ -24,6 +15,7 @@ const client = new OpenAI({
 function cleanAIResponse(text) {
   if (!text) return "";
 
+  // Remove ```json ``` wrappers if present
   return text
     .replace(/```json/g, "")
     .replace(/```/g, "")
@@ -49,7 +41,7 @@ function safeJSONParse(text) {
 async function generateAIResponse(prompt, options = {}) {
   try {
     const response = await client.chat.completions.create({
-      model: MODEL,
+      model: "llama-3.1-8b-instant",
       messages: [
         {
           role: "system",
@@ -61,11 +53,11 @@ async function generateAIResponse(prompt, options = {}) {
           content: prompt
         }
       ],
-      temperature: options.temperature ?? 0.6,
-      max_tokens: options.maxTokens ?? 1500
+      temperature: options.temperature || 0.6,
+      max_tokens: options.maxTokens || 1500
     });
 
-    return response.choices?.[0]?.message?.content || "";
+    return response.choices[0].message.content;
   } catch (error) {
     console.error("Groq AI Error:", error.response?.data || error.message);
     throw new Error("AI service failed");
@@ -92,7 +84,7 @@ async function generateStructuredResponse(prompt) {
 async function solveQuestion(question) {
   try {
     const response = await client.chat.completions.create({
-      model: MODEL,
+      model: "llama-3.1-8b-instant",
       messages: [
         {
           role: "system",
@@ -108,7 +100,7 @@ async function solveQuestion(question) {
       max_tokens: 1000
     });
 
-    return response.choices?.[0]?.message?.content || "";
+    return response.choices[0].message.content;
   } catch (error) {
     console.error("Groq Solve Error:", error.response?.data || error.message);
     throw new Error("AI solve failed");
@@ -186,16 +178,166 @@ Only valid JSON. No markdown.
 }
 
 // =====================================================
-// EXPORTS (UNCHANGED)
+// EXPORTS
 // =====================================================
 module.exports = {
   generateAIResponse,
   generateStructuredResponse,
   generateWeeklyReview,
   generateAdaptivePlanner,
-  solveQuestion,
-  rebalancePlannerByMastery,
-  calculateConfidence,
-  predictNextScore,
-  calculateExamReadiness
+  solveQuestion
 };
+// =====================================================
+// 🔥 AUTO REBALANCE PLANNER BASED ON SUBJECT MASTERY
+// =====================================================
+function rebalancePlannerByMastery(planner) {
+  if (!planner.weeklyPlan || !planner.subjectStats) return;
+
+  planner.weeklyPlan.forEach(day => {
+    if (!day.tasks) return;
+
+    day.tasks.forEach(task => {
+      const subjectRecord = planner.subjectStats.find(
+        s => task.topic.toLowerCase().includes(s.subject.toLowerCase())
+      );
+
+      if (!subjectRecord) return;
+
+      // Low mastery → increase weight
+      if (subjectRecord.mastery < 50) {
+        task.weight = Math.min(task.weight + 1, 5);
+      }
+
+      // High mastery → normalize weight
+      if (subjectRecord.mastery > 80) {
+        task.weight = Math.max(task.weight - 1, 1);
+      }
+    });
+  });
+}
+
+module.exports.rebalancePlannerByMastery = rebalancePlannerByMastery;
+// =====================================================
+// 🔥 CONFIDENCE SCORE CALCULATOR
+// =====================================================
+function calculateConfidence(planner, subject) {
+  const subjectRecord = planner.subjectStats.find(
+    s => s.subject === subject
+  );
+
+  const mastery = subjectRecord ? subjectRecord.mastery : 50;
+
+  const stability = 100 - planner.riskScore;
+
+  let trendBonus = 0;
+  if (planner.performanceTrend === "Improving") trendBonus = 20;
+  if (planner.performanceTrend === "Stable") trendBonus = 10;
+  if (planner.performanceTrend === "Declining") trendBonus = 0;
+
+  const confidenceScore = Math.round(
+    mastery * 0.5 +
+    stability * 0.3 +
+    trendBonus * 0.2
+  );
+
+  let confidenceLevel = "Medium";
+
+  if (confidenceScore >= 75) confidenceLevel = "High";
+  else if (confidenceScore >= 50) confidenceLevel = "Medium";
+  else confidenceLevel = "Low";
+
+  return {
+    confidenceScore,
+    confidenceLevel
+  };
+}
+
+module.exports.calculateConfidence = calculateConfidence;
+// =====================================================
+// 🔥 PERFORMANCE PREDICTION ENGINE
+// =====================================================
+function predictNextScore(planner) {
+  if (!planner.accuracyHistory || planner.accuracyHistory.length === 0) {
+    return {
+      predictedNextScore: 50,
+      readinessLevel: "Insufficient Data"
+    };
+  }
+
+  const recent = planner.accuracyHistory.slice(-3);
+  const avg =
+    recent.reduce((sum, r) => sum + r.accuracy, 0) / recent.length;
+
+  let trendBoost = 0;
+
+  if (planner.performanceTrend === "Improving") trendBoost = 5;
+  if (planner.performanceTrend === "Stable") trendBoost = 2;
+  if (planner.performanceTrend === "Declining") trendBoost = -5;
+
+  let predictedNextScore = Math.round(avg + trendBoost);
+
+  if (predictedNextScore > 100) predictedNextScore = 100;
+  if (predictedNextScore < 0) predictedNextScore = 0;
+
+  let readinessLevel = "Needs Improvement";
+
+  if (predictedNextScore >= 80) readinessLevel = "Exam Ready";
+  else if (predictedNextScore >= 60) readinessLevel = "Moderate Readiness";
+
+  return {
+    predictedNextScore,
+    readinessLevel
+  };
+}
+
+module.exports.predictNextScore = predictNextScore;
+// =====================================================
+// 🔥 EXAM READINESS INDEX CALCULATOR
+// =====================================================
+function calculateExamReadiness(planner, confidenceScore, predictedNextScore) {
+  if (!planner.subjectStats || planner.subjectStats.length === 0) {
+    return {
+      examReadinessIndex: 50,
+      readinessStatus: "Insufficient Data",
+      focusArea: "Start giving mock tests"
+    };
+  }
+
+  // Average Mastery
+  const totalMastery = planner.subjectStats.reduce(
+    (sum, s) => sum + s.mastery,
+    0
+  );
+
+  const avgMastery =
+    totalMastery / planner.subjectStats.length;
+
+  const stability = 100 - planner.riskScore;
+
+  const examReadinessIndex = Math.round(
+    avgMastery * 0.4 +
+    stability * 0.25 +
+    confidenceScore * 0.2 +
+    predictedNextScore * 0.15
+  );
+
+  let readinessStatus = "Needs Improvement";
+
+  if (examReadinessIndex >= 80) readinessStatus = "Exam Ready";
+  else if (examReadinessIndex >= 65) readinessStatus = "On Track";
+  else if (examReadinessIndex >= 50) readinessStatus = "Moderate";
+  else readinessStatus = "High Risk";
+
+  // Weakest subject detection
+  const weakest = planner.subjectStats.reduce((min, s) =>
+    s.mastery < min.mastery ? s : min
+  );
+
+  return {
+    examReadinessIndex,
+    readinessStatus,
+    focusArea: weakest.subject
+  };
+}
+
+module.exports.calculateExamReadiness = calculateExamReadiness;
