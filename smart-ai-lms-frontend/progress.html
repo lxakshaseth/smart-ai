@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress | Smart AI LMS</title>
+
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* ================= LAYOUT ================= */
+
+.progress-wrapper {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* ================= HEADER ================= */
+
+.progress-header {
+    margin-bottom: 30px;
+}
+
+.progress-header h1 {
+    font-size: 28px;
+}
+
+/* ================= WEAK SUBJECT ALERT ================= */
+
+.weak-banner {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    padding: 14px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.hidden { display: none; }
+
+/* ================= KPI CARDS ================= */
+
+.progress-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 8px;
+}
+
+.stat-card p {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* ================= RISK CIRCLE ================= */
+
+.risk-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    margin: 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    background: conic-gradient(#22c55e 0%, #1e293b 0%);
+    position: relative;
+}
+
+.risk-circle span {
+    position: absolute;
+}
+
+/* ================= SECTION CARD ================= */
+
+.progress-card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+}
+
+/* ================= HEATMAP ================= */
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.heatmap-cell {
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 6px;
+    background: #0f172a;
+}
+
+/* ================= BUTTON ================= */
+
+.apply-btn {
+    margin-top: 15px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    color: white;
+}
+
+/* ================= TOAST ================= */
+
+#toastContainer {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+}
+
+.toast {
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: white;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.success { background: #22c55e; }
+.toast.error { background: #ef4444; }
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Smart AI LMS</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="ai.html">AI Tutor</a>
+    <a href="study.html">Study Mode</a>
+    <a href="planner.html">Study Planner</a>
+    <a href="youtube.html">YouTube</a>
+    <a href="books.html">Books</a>
+    <a href="progress.html" class="active">Progress</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="progress-wrapper">
+
+<!-- Weak Subject Banner -->
+<div id="weakSubjectBanner" class="weak-banner hidden">
+    ⚠ Focus Required on <strong id="weakSubjectName">Subject</strong>
+</div>
+
+<div class="progress-header">
+    <h1>📊 Learning Analytics</h1>
+</div>
+
+<!-- KPI CARDS -->
+<div class="progress-cards">
+
+<div class="stat-card">
+    <h3>Total XP</h3>
+    <p id="userXP">0</p>
+</div>
+
+<div class="stat-card">
+    <h3>Rank</h3>
+    <p id="userRank">Beginner</p>
+</div>
+
+<div class="stat-card">
+    <h3>Streak</h3>
+    <p><span id="userStreak">0</span> days 🔥</p>
+</div>
+
+<div class="stat-card">
+    <h3>Risk Score</h3>
+    <div class="risk-circle">
+        <span id="riskScore">0</span>
+    </div>
+    <p id="riskLevel">Low</p>
+</div>
+
+<div class="stat-card">
+    <h3>Confidence</h3>
+    <p id="confidenceLevel">Medium</p>
+</div>
+
+<div class="stat-card">
+    <h3>Exam Readiness</h3>
+    <p id="readinessStatus">Average</p>
+</div>
+
+</div>
+
+<!-- AI SUMMARY -->
+<div class="progress-card">
+    <h2>🧠 AI Weekly Insight</h2>
+    <p id="aiSummaryText">Loading...</p>
+</div>
+
+<!-- SMART RECOMMENDATION -->
+<div class="progress-card">
+    <h2>🎯 Smart Recommendation</h2>
+    <div id="recommendationContent">Loading...</div>
+    <button id="applyRecommendationBtn" class="apply-btn">
+        🚀 Apply To Planner
+    </button>
+</div>
+
+<!-- HEATMAP -->
+<div class="progress-card">
+    <h2>🔥 Study Consistency</h2>
+    <div id="heatmapContainer" class="heatmap-grid"></div>
+</div>
+
+<!-- CHARTS -->
+<div class="progress-card">
+    <h2>📈 Weekly XP</h2>
+    <canvas id="weeklyChart"></canvas>
+</div>
+
+<div class="progress-card">
+    <h2>🎯 Accuracy Trend</h2>
+    <canvas id="accuracyChart"></canvas>
+</div>
+
+<div class="progress-card">
+    <h2>📚 Subject Mastery</h2>
+    <canvas id="masteryChart"></canvas>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script src="js/progress.js"></script>
+
+</body>
+</html>

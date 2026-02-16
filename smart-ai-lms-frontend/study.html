@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Mode</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Smart AI LMS</h2>
+        <a href="index.html">Dashboard</a>
+        <a href="ai.html">AI Tutor</a>
+        <a href="study.html" class="active">Study Mode</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <div class="study-box">
+            <h2>AI Study Generator</h2>
+
+            <!-- Topic Input -->
+            <input 
+                type="text" 
+                id="topicInput" 
+                placeholder="Enter Topic (e.g. Machine Learning)"
+                onkeypress="if(event.key==='Enter') generateNotes()"
+            >
+
+            <!-- Action Buttons -->
+            <div style="margin-top: 15px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button onclick="generateNotes()">Generate Notes</button>
+                <button onclick="generateQuiz()">Generate Quiz</button>
+                <button onclick="exportPDF()">Export PDF</button>
+                <button onclick="clearOutput()">Clear</button>
+            </div>
+
+            <!-- Output Area -->
+            <div 
+                id="output" 
+                style="
+                    margin-top:20px;
+                    white-space:pre-wrap;
+                    background:rgba(255,255,255,0.05);
+                    padding:15px;
+                    border-radius:10px;
+                    min-height:200px;
+                "
+            ></div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- jsPDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Study Script -->
+<script src="js/study.js"></script>
+
+</body>
+</html>

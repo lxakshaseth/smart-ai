@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tutor | Smart AI LMS</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+/* ================= PREMIUM PROGRESS ================= */
+
+.progress-wrapper {
+    max-width: 1150px;
+    margin: auto;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 45px;
+}
+
+.progress-header h1 {
+    font-size: 30px;
+    font-weight: 600;
+}
+
+/* KPI CARDS */
+
+.progress-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, rgba(30,41,59,0.95), rgba(15,23,42,0.95));
+    padding: 35px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: 0.4s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+}
+
+.stat-card h3 {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.stat-card p {
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* XP BAR */
+
+.xp-meter {
+    margin-top: 18px;
+    height: 12px;
+    background: #1e293b;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.xp-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    border-radius: 20px;
+    transition: width 1s ease;
+}
+
+.level-label {
+    margin-top: 12px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* PROGRESS SECTIONS */
+
+.progress-card {
+    background: linear-gradient(145deg, rgba(30,41,59,0.95), rgba(15,23,42,0.95));
+    padding: 35px;
+    border-radius: 25px;
+    margin-bottom: 45px;
+}
+
+/* SUBJECT */
+
+.subject-bar {
+    margin-bottom: 25px;
+}
+
+.subject-bar span {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.bar {
+    width: 100%;
+    height: 14px;
+    background: #1e293b;
+    border-radius: 20px;
+}
+
+.fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+/* ACHIEVEMENT POPUP */
+
+.achievement-popup {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 22px 28px;
+    border-radius: 20px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.5s ease;
+    z-index: 9999;
+}
+
+.achievement-popup.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="ai.html">AI Tutor</a>
+    <a href="study.html">Study Mode</a>
+    <a href="planner.html">Study Planner</a>   <!-- YAHAN -->
+    <a href="youtube.html">YouTube</a>
+    <a href="books.html">Books</a>
+    <a href="progress.html">Progress</a>
+    <a href="critical.html">Critical Thinking</a>
+    <a href="/profile">👤 Profile</a>
+    <a href="/settings">⚙ Settings</a>
+
+</div>
+
+
+<div class="main">
+
+<!-- ================= CHAT ================= -->
+<div class="chat-container" id="chatSection">
+
+    <div class="chat-header">
+        <h1>🤖 AI Smart Tutor</h1>
+        <div class="token-box">
+            Tokens Used: <span id="tokenCount">0</span>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chatBox"></div>
+
+    <div id="ocrPreview" class="ocr-preview" style="display:none;">
+        <h4>📷 OCR Extracted Text:</h4>
+        <p id="ocrText"></p>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" id="questionInput"
+            placeholder="Ask anything..."
+            onkeypress="if(event.key==='Enter'){sendMessage();}">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="ocr-controls">
+        <input type="file" id="imageInput" accept="image/*">
+        <button onclick="extractText()">Extract Text</button>
+    </div>
+
+</div>
+
+<!-- ================= PROGRESS ================= -->
+<div id="progressSection" style="display:none;">
+
+<div class="progress-wrapper">
+
+    <div class="progress-header">
+        <h1>📊 Learning Analytics</h1>
+        <button onclick="backToChat()">← Back</button>
+    </div>
+
+    <div class="progress-cards">
+
+        <div class="stat-card">
+            <h3>Total XP</h3>
+            <p id="userXP">0</p>
+            <div class="xp-meter">
+                <div class="xp-fill" id="xpFill"></div>
+            </div>
+            <div class="level-label">
+                Level <span id="userLevel">1</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Rank</h3>
+            <p id="userRank">Beginner</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Streak</h3>
+            <p><span id="userStreak">0</span> days</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Achievements</h3>
+            <p id="achievementCount">0</p>
+        </div>
+
+    </div>
+
+    <div class="progress-card">
+        <h2>📚 Subject Mastery</h2>
+        <div id="subjectStats"></div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- Achievement Popup -->
+<div id="achievementPopup" class="achievement-popup">
+    🏆 Achievement Unlocked!
+</div>
+
+<script src="js/ai.js"></script>
+
+<script>
+function openProgress() {
+    document.getElementById("chatSection").style.display = "none";
+    document.getElementById("progressSection").style.display = "block";
+}
+
+function backToChat() {
+    document.getElementById("chatSection").style.display = "block";
+    document.getElementById("progressSection").style.display = "none";
+}
+</script>
+
+</body>
+</html>

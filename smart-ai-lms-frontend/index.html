@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard - Smart AI LMS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="sidebar">
+        <h2>Smart AI LMS</h2>
+
+        <a href="index.html" class="active">Dashboard</a>
+        <a href="ai.html">AI Tutor</a>
+        <a href="study.html">Study Mode</a>
+        <a href="planner.html">Study Planner</a>
+        <a href="progress.html">Progress</a>
+        <a href="critical.html">Critical Thinking</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/settings">⚙ Settings</a>
+
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="main">
+
+        <h1 class="page-title">🧠 Whiteboard Solver</h1>
+
+        <div class="card-center">
+
+            <canvas id="whiteboard" width="700" height="400"></canvas>
+
+            <div class="btn-row">
+                <button onclick="clearBoard()">Clear</button>
+                <button onclick="solveDrawing()">Solve Drawing</button>
+            </div>
+
+        </div>
+
+        <div id="resultBox" class="result-box"></div>
+
+    </div>
+
+</div>
+
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

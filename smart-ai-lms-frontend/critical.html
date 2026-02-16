@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Critical Thinking Lab | Smart AI LMS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+/* ================= LAYOUT ================= */
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+
+/* ================= BRAIN PANEL ================= */
+
+.brain-stats {
+    background: #0f172a;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stat-box h3 {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.stat-box h2 {
+    margin-top: 5px;
+}
+
+/* ================= BADGES ================= */
+
+.badges-box {
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+#brainBadges {
+    color: #22c55e;
+}
+
+/* ================= GAME GRID ================= */
+
+.lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.lab-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.lab-card:hover {
+    transform: translateY(-6px);
+}
+
+.start-btn {
+    margin-top: 15px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg,#3b82f6,#22c55e);
+    color: white;
+    cursor: pointer;
+}
+
+.start-btn:hover {
+    opacity: 0.9;
+}
+
+/* ================= GAME AREA ================= */
+
+#gameContainer {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 15px;
+    min-height: 220px;
+}
+
+.brain-message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #22c55e;
+}
+
+/* ================= LEADERBOARD MODAL ================= */
+
+#leaderboardModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 15px;
+    width: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.close-btn {
+    float: right;
+    cursor: pointer;
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.leaderboard-btn {
+    background: #f59e0b;
+    margin-top: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="sidebar">
+        <h2>Smart AI LMS</h2>
+        <a href="index.html">Dashboard</a>
+        <a href="ai.html">AI Tutor</a>
+        <a href="study.html">Study Mode</a>
+        <a href="planner.html">Study Planner</a>
+        <a href="critical.html" class="active">Critical Thinking</a>
+        <a href="progress.html">Progress</a>
+    </div>
+
+    <!-- ================= MAIN ================= -->
+    <div class="main-content">
+
+        <h1>🧠 Critical Thinking Lab</h1>
+
+        <!-- ================= BRAIN STATS ================= -->
+        <div class="brain-stats">
+
+            <div class="stat-box">
+                <h3>XP</h3>
+                <h2 id="brainScore">0</h2>
+            </div>
+
+            <div class="stat-box">
+                <h3>Level</h3>
+                <h2 id="brainLevel">1</h2>
+            </div>
+
+            <div class="stat-box">
+                <h3>Accuracy</h3>
+                <h2 id="brainAccuracy">0%</h2>
+            </div>
+
+            <div class="stat-box">
+                <h3>Streak</h3>
+                <h2 id="brainStreak">0</h2>
+            </div>
+
+            <div class="stat-box">
+                <h3>Timer</h3>
+                <h2 id="brainTimer">0</h2>
+            </div>
+
+        </div>
+
+        <!-- ================= BADGES ================= -->
+        <div class="badges-box">
+            <strong>🏆 Badges:</strong>
+            <span id="brainBadges">None yet</span>
+            <br>
+            <button class="start-btn leaderboard-btn" onclick="loadLeaderboard()">
+                🏅 View Leaderboard
+            </button>
+        </div>
+
+        <!-- ================= GAME GRID ================= -->
+        <div class="lab-grid">
+
+            <div class="lab-card">
+                <h3>🤖 Logical Reasoning</h3>
+                <p>Deduction & reasoning puzzles.</p>
+                <button class="start-btn" onclick="startGame('logic')">Start</button>
+            </div>
+
+            <div class="lab-card">
+                <h3>🔢 Pattern Recognition</h3>
+                <p>IQ sequence challenges.</p>
+                <button class="start-btn" onclick="startGame('pattern')">Start</button>
+            </div>
+
+            <div class="lab-card">
+                <h3>🧠 Memory Booster</h3>
+                <p>Recall & retention test.</p>
+                <button class="start-btn" onclick="startGame('memory')">Start</button>
+            </div>
+
+            <div class="lab-card">
+                <h3>⚖ Decision Simulator</h3>
+                <p>Real-life scenario choices.</p>
+                <button class="start-btn" onclick="startGame('decision')">Start</button>
+            </div>
+
+            <div class="lab-card">
+                <h3>⚡ Rapid Thinking</h3>
+                <p>Speed-based mental math.</p>
+                <button class="start-btn" onclick="startGame('rapid')">Start</button>
+            </div>
+
+            <div class="lab-card">
+                <h3>🎮 Strategy Game</h3>
+                <p>Risk vs reward engine.</p>
+                <button class="start-btn" onclick="startGame('strategy')">Start</button>
+            </div>
+
+            <div class="lab-card">
+                <h3>💻 AI Code Lab</h3>
+                <p>Explain & optimize code.</p>
+                <button class="start-btn" onclick="startGame('code')">Open</button>
+            </div>
+
+        </div>
+
+        <!-- ================= GAME AREA ================= -->
+        <div id="gameContainer">
+            <p>Select a game to begin training your brain.</p>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ================= LEADERBOARD MODAL ================= -->
+<div id="leaderboardModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeLeaderboard()">✖</span>
+        <h2>🏆 Top Brain Players</h2>
+        <div id="leaderboardList">Loading...</div>
+    </div>
+</div>
+
+
+<script src="js/critical.js"></script>
+
+<script>
+function closeLeaderboard() {
+    document.getElementById("leaderboardModal").style.display = "none";
+}
+</script>
+
+</body>
+</html>

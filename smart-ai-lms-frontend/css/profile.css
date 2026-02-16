@@ -1,0 +1,76 @@
+body {
+    background: #0f172a;
+    color: white;
+    font-family: Arial;
+}
+
+.profile-container {
+    width: 80%;
+    margin: auto;
+    padding: 30px;
+}
+
+.profile-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.avatar {
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #334155;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #3b82f6;
+    width: 50%;
+    border-radius: 10px;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.kpi {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.intelligence {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.account {
+    margin-top: 30px;
+}
+
+.account button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.logout {
+    background: #ef4444;
+    color: white;
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | Smart AI LMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        .signup-box {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 12px;
+            width: 350px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .login-link a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .error {
+            color: #f87171;
+            text-align: center;
+            margin-bottom: 10px;
+            min-height: 20px;
+        }
+
+        .success {
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-box">
+    <h2>Create Account</h2>
+
+    <div id="errorMsg" class="error"></div>
+
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+
+    <button id="signupBtn">Sign Up</button>
+
+    <div class="login-link">
+        Already have an account? <a href="/login">Login</a>
+    </div>
+</div>
+
+<script>
+
+const API_BASE = "http://localhost:5000";
+
+const btn = document.getElementById("signupBtn");
+
+btn.addEventListener("click", signup);
+
+async function signup() {
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.classList.remove("success");
+    errorMsg.innerText = "";
+
+    if (!username || !email || !password) {
+        errorMsg.innerText = "All fields are required";
+        return;
+    }
+
+    if (password.length < 6) {
+        errorMsg.innerText = "Password must be at least 6 characters";
+        return;
+    }
+
+    try {
+
+        btn.disabled = true;
+        btn.innerText = "Creating Account...";
+
+        // 🔥 CORRECT ROUTE
+        const response = await fetch(`${API_BASE}/api/auth/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            errorMsg.innerText = data.message || "Signup failed";
+            btn.disabled = false;
+            btn.innerText = "Sign Up";
+            return;
+        }
+
+        // Save token
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+        }
+
+        errorMsg.classList.add("success");
+        errorMsg.innerText = "Account created successfully! Redirecting...";
+
+        setTimeout(() => {
+            window.location.href = "/dashboard";
+        }, 800);
+
+    } catch (err) {
+        console.error(err);
+        errorMsg.innerText = "Server error. Please try again.";
+        btn.disabled = false;
+        btn.innerText = "Sign Up";
+    }
+}
+
+</script>
+
+</body>
+</html>

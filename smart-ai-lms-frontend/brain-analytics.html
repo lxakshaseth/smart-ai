@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Brain Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.analytics-card {
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+.stat-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+<h2>Smart AI LMS</h2>
+<a href="index.html">Dashboard</a>
+<a href="critical.html">Critical Thinking</a>
+<a href="brain-leaderboard.html">Leaderboard</a>
+<a href="brain-analytics.html" class="active">Brain Analytics</a>
+</div>
+
+<div class="main-content">
+
+<h1>📊 Brain Analytics Dashboard</h1>
+
+<div class="stat-grid">
+
+<div class="analytics-card">
+<h3>XP</h3>
+<h2 id="xpStat">0</h2>
+</div>
+
+<div class="analytics-card">
+<h3>Level</h3>
+<h2 id="levelStat">1</h2>
+</div>
+
+<div class="analytics-card">
+<h3>Accuracy</h3>
+<h2 id="accuracyStat">0%</h2>
+</div>
+
+<div class="analytics-card">
+<h3>Intelligence</h3>
+<h2 id="iqStat">100</h2>
+</div>
+
+<div class="analytics-card">
+<h3>Current Streak</h3>
+<h2 id="streakStat">0</h2>
+</div>
+
+<div class="analytics-card">
+<h3>Best Streak</h3>
+<h2 id="bestStreakStat">0</h2>
+</div>
+
+</div>
+
+<div class="analytics-card">
+<h3>XP Growth</h3>
+<canvas id="xpChart"></canvas>
+</div>
+
+</div>
+</div>
+
+<script src="js/brain-analytics.js"></script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Smart AI LMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #fff;
+            transition: 0.3s ease;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 240px;
+            background: #111827;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 40px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .dark-btn {
+            background: #334155;
+            color: white;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* ================= CARDS ================= */
+
+        .cards {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .card p {
+            font-size: 26px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        /* ================= LIGHT MODE ================= */
+
+        body.light-mode {
+            background: #f1f5f9;
+            color: #000;
+        }
+
+        body.light-mode .sidebar {
+            background: #ffffff;
+        }
+
+        body.light-mode .sidebar a {
+            color: #334155;
+        }
+
+        body.light-mode .sidebar a.active,
+        body.light-mode .sidebar a:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        body.light-mode .card {
+            background: white;
+            color: black;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 768px){
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .sidebar a {
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <div class="sidebar">
+        <h2>🧠 Smart AI LMS</h2>
+
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/planner">Planner</a>
+        <a href="/progress">Progress</a>
+        <a href="/critical">Critical Lab</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/settings">⚙ Settings</a>
+    </div>
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="main">
+
+        <div class="topbar">
+            <h2 id="welcomeText">Welcome Back 👋</h2>
+
+            <div>
+                <button class="dark-btn" id="themeToggle">🌙</button>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="cards">
+            <div class="card">
+                <h3>XP</h3>
+                <p id="xpValue">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Level</h3>
+                <p id="levelValue">1</p>
+            </div>
+
+            <div class="card">
+                <h3>Accuracy</h3>
+                <p id="accuracyValue">0%</p>
+            </div>
+
+            <div class="card">
+                <h3>Streak</h3>
+                <p id="streakValue">0</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* ================= AUTH CHECK ================= */
+
+const token = localStorage.getItem("token");
+if (!token) window.location.href = "/login";
+
+/* ================= LOAD USER DATA ================= */
+
+async function loadDashboard() {
+    try {
+        const res = await fetch("/api/profile", {
+            headers: { Authorization: "Bearer " + token }
+        });
+
+        if (res.status === 401) {
+            localStorage.clear();
+            return window.location.href = "/login";
+        }
+
+        const response = await res.json();
+        if (!response.success) return;
+
+        const user = response.data;
+
+        document.getElementById("welcomeText").innerText =
+            "Welcome Back, " + (user.name || "User") + " 👋";
+
+        document.getElementById("xpValue").innerText = user.xp ?? 0;
+        document.getElementById("levelValue").innerText = user.level ?? 1;
+        document.getElementById("accuracyValue").innerText =
+            (user.accuracy ?? 0) + "%";
+        document.getElementById("streakValue").innerText =
+            user.streak ?? 0;
+
+        // Apply DB dark mode
+        if (user.darkMode) {
+            document.body.classList.add("light-mode");
+            localStorage.setItem("darkMode", "true");
+            themeToggle.innerText = "☀";
+        }
+
+    } catch (err) {
+        console.error("Dashboard load error:", err);
+    }
+}
+
+/* ================= DARK MODE ================= */
+
+const themeToggle = document.getElementById("themeToggle");
+
+if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("light-mode");
+    themeToggle.innerText = "☀";
+}
+
+themeToggle.addEventListener("click", async () => {
+    document.body.classList.toggle("light-mode");
+
+    const isLight = document.body.classList.contains("light-mode");
+    localStorage.setItem("darkMode", isLight);
+    themeToggle.innerText = isLight ? "☀" : "🌙";
+
+    // Save to DB
+    await fetch("/api/profile/settings", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ darkMode: isLight })
+    });
+});
+
+/* ================= LOGOUT ================= */
+
+document.getElementById("logoutBtn")
+.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "/login";
+});
+
+/* ================= INIT ================= */
+
+loadDashboard();
+</script>
+
+</body>
+</html>

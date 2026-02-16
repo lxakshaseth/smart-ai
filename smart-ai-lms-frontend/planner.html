@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart AI Study Planner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<style>
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+.planner-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+}
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+.progress-bar {
+    height: 10px;
+    background: #0f172a;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+#progressFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    transition: width 0.6s ease;
+}
+.task-item {
+    background: #0f172a;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.action-btn {
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+@media(max-width: 900px) {
+    .planner-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Smart AI LMS</h2>
+        <a href="/index.html">Dashboard</a>
+        <a href="/ai.html">AI Tutor</a>
+        <a href="/study.html">Study Mode</a>
+        <a href="/planner.html" class="active">Study Planner</a>
+        <a href="/youtube.html">YouTube</a>
+        <a href="/books.html">Books</a>
+        <a href="/progress.html">Progress</a>
+        <a href="critical.html">Critical Thinking</a>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <h1>🧠 Smart AI Study Planner</h1>
+
+        <div class="planner-grid">
+
+            <!-- LEFT SIDE -->
+            <div>
+
+                <!-- Goal Tracker -->
+                <div class="card">
+                    <h3>🎯 Goal Tracker</h3>
+
+                    <p id="goalText">Loading focus...</p>
+
+                    <div class="progress-bar">
+                        <div id="progressFill"></div>
+                    </div>
+
+                    <p>
+                        Risk Level:
+                        <strong id="riskText">-</strong>
+                    </p>
+                </div>
+
+                <!-- Weekly Tasks -->
+                <div class="card">
+                    <h3>📅 Weekly Tasks</h3>
+
+                    <div id="tasksContainer">
+                        Loading tasks...
+                    </div>
+
+                    <button id="generateSmartPlanBtn" class="action-btn">
+                        🤖 Generate Smart Plan
+                    </button>
+                </div>
+
+                <!-- Completion Stats -->
+                <div class="card">
+                    <h3>📊 Completion Stats</h3>
+
+                    <p>
+                        Weekly Completion:
+                        <strong><span id="weeklyCompletion">0</span>%</strong>
+                    </p>
+
+                    <p>
+                        Study Streak:
+                        <strong><span id="studyStreak">0</span></strong> Days 🔥
+                    </p>
+
+                    <p>
+                        Weak Subject:
+                        <strong><span id="weakSubject">-</span></strong>
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div>
+
+                <!-- AI Panel -->
+                <div class="card">
+                    <h3>🤖 Weekly AI Control Panel</h3>
+
+                    <p id="aiSuggestion">
+                        Loading AI analysis...
+                    </p>
+
+                    <button id="refreshAIBtn" class="action-btn">
+                        🔄 Refresh AI
+                    </button>
+
+                    <button id="applyRecommendationBtn" class="action-btn">
+                        🚀 Apply Smart Recommendation
+                    </button>
+                </div>
+
+                <!-- Tomorrow Focus -->
+                <div class="card">
+                    <h3>📘 Tomorrow's Focus</h3>
+
+                    <div id="tomorrowFocus">
+                        No focus generated yet.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toastContainer"></div>
+
+<!-- IMPORTANT: Absolute path -->
+<script src="/js/planner.js"></script>
+
+</body>
+</html>

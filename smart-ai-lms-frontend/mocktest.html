@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Test Center</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="index.html">Dashboard</a>
+        <a href="ai.html">AI Tutor</a>
+        <a href="study.html">Study Mode</a>
+        <a href="planner.html">Study Planner</a>
+        <a href="mocktest.html">Mock Test</a>
+        <a href="youtube.html">YouTube</a>
+        <a href="books.html">Books</a>
+        <a href="progress.html">Progress</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <h1>🧪 Mock Test Center</h1>
+
+        <div style="margin-bottom:20px;">
+            <input type="text" id="subject" placeholder="Subject (e.g. DSA)" />
+            <input type="text" id="topic" placeholder="Topic (e.g. Recursion)" />
+            <button onclick="generateTest()">Generate Test</button>
+        </div>
+
+        <div id="testContainer"></div>
+
+        <button id="submitBtn" style="display:none;" onclick="submitTest()">
+            Submit Test
+        </button>
+
+        <div id="resultContainer" style="margin-top:20px;"></div>
+
+    </div>
+
+</div>
+
+<script src="js/mocktest.js"></script>
+</body>
+</html>

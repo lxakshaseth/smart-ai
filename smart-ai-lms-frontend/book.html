@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Books Library | Smart AI LMS</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Smart AI LMS</h2>
+        <a href="index.html">Dashboard</a>
+        <a href="ai.html">AI Tutor</a>
+        <a href="study.html">Study Mode</a>
+        <a href="ai.html#youtubeSection">YouTube</a>
+        <a href="books.html" class="active">📚 Books</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="chat-container">
+
+            <div class="chat-header">
+                <h1>📚 Smart Academic Library</h1>
+            </div>
+
+            <!-- SEARCH -->
+            <div style="margin:20px 0;">
+                <input type="text" id="bookSearch" placeholder="Search topic (e.g. Class 10 Maths, Data Structures)">
+                <button onclick="searchBooks()">Search</button>
+            </div>
+
+            <!-- AUTO SUGGESTED -->
+            <div id="autoSuggested"></div>
+
+            <!-- RESULTS -->
+            <div id="bookResults" style="margin-top:30px;"></div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="js/books.js"></script>
+</body>
+</html>
